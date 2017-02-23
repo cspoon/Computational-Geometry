@@ -8,16 +8,22 @@ namespace ComputationalGeometry
 {
     public enum ChapterType
     {
-        None,
         ConvexHull,
     }
 
     public class Chapter
     {
+        public string[] algorithmNames;
         public virtual void OpenFile() { }
         public virtual void SaveFile() { }
         public virtual void Init() { }
         public virtual void Reset() { }
+        public void Go(int algorithmIndex) {
+            OnGo(algorithmIndex);
+            DrawResult();
+        }
+        public virtual void OnGo(int algorithmIndex) { }
+        public virtual void DrawResult() { }
     }
 
     public static class SimpleChapterFactory

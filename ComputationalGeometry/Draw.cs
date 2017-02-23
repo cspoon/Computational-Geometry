@@ -16,15 +16,19 @@ namespace ComputationalGeometry
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
         }
 
+       
         public static void DrawPoint(int x, int y) {
-            //Console.WriteLine(string.Format("X = {0}, y = {1}", x.ToString(), y.ToString()));
-            Rectangle rect = new Rectangle(x, y, 3, 3);
+            Rectangle rect = new Rectangle(x-2, CGUtils.ReversedY(y)-2, 4, 4);
             Pen p = new Pen(Color.Black);
             g.DrawEllipse(p, rect);
             Brush b = new SolidBrush(Color.Black);
             g.FillEllipse(b, rect);
         }
 
+        public static void DrawLine(CGPoint pa, CGPoint pb) {
+            Pen p = new Pen(Color.Black);
+            g.DrawLine(p, pa.x, CGUtils.ReversedY(pa.y), pb.x, CGUtils.ReversedY(pb.y));
+        }
         public static void DrawPoint(CGPoint p) {
             DrawPoint(p.x, p.y);
         }

@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace ComputationalGeometry
 {
-    public class WinOperation
+    public class WinManager
     {
-        public static WinOperation Instance = new WinOperation();
+        public static WinManager Instance = new WinManager();
 
         public CGData data = new CGData();
-        private WinOperation() {
+        private WinManager() {
         }
 
         public void Reset() {
@@ -21,6 +21,10 @@ namespace ComputationalGeometry
 
         public void CreateRandomPoints(int count) {
             data.CreateRandomPoints(count);
+        }
+
+        public void CreatePoint(int x, int y) {
+            data.CreatePoint(x, y);
         }
     }
 }

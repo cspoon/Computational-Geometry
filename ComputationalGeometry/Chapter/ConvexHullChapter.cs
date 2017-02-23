@@ -12,6 +12,8 @@ namespace ComputationalGeometry
 
         public override void Init() {
             points.Clear();
+            algorithmNames = new string[] {
+            "Jarvis March", "Graham Scan"};
         }
 
         public override void Reset() {
@@ -22,6 +24,27 @@ namespace ComputationalGeometry
         }
 
         public override void SaveFile() {
+        }
+
+        public override void OnGo(int algorithmIndex) {
+            var convexHull = new ConvexHull(WinManager.Instance.data.points);
+            switch (algorithmIndex) { 
+                case 0:
+                    convexHull.JarvisMarch();
+                    break;
+                case 1:
+                    convexHull.GrahamScan();
+                    break;
+            }
+        }
+
+        public override void DrawResult() {
+            var ltl = CGUtils.LowestThenLeftmost(WinManager.Instance.data.points);
+            var curr = ltl;
+            do {
+                Draw.DrawLine(curr, curr.succ);
+                curr = curr.succ;
+            } while (ltl != curr);
         }
     }
 }
