@@ -13,7 +13,8 @@ namespace ComputationalGeometry
         public override void Init() {
             points.Clear();
             algorithmNames = new string[] {
-            "Jarvis March", "Graham Scan"};
+            "Jarvis March", "Graham Scan", 
+            "Quick Hull", "Merge Hull"};
         }
 
         public override void Reset() {
@@ -34,6 +35,12 @@ namespace ComputationalGeometry
                     break;
                 case 1:
                     convexHull.GrahamScan();
+                    break;
+                case 2:
+                    convexHull.QuickHull();
+                    break;
+                case 3:
+                    convexHull.MergeHull();
                     break;
             }
         }

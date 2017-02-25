@@ -51,6 +51,9 @@
     <Compile Include="Chapter\Chapter.cs" />
     <Compile Include="Chapter\ConvexHullChapter.cs" />
     <Compile Include="ConvexHull\ConvexHull.cs" />
+    <Compile Include="ConvexHull\GrahamScan.cs" />
+    <Compile Include="ConvexHull\JarvisMarch.cs" />
+    <Compile Include="ConvexHull\QuickHull.cs" />
     <Compile Include="Draw.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>

@@ -49,19 +49,77 @@ namespace ComputationalGeometry
                 + p.x * from.y - p.y * from.x;
         }
 
-        public static CGPoint LowestThenLeftmost(List<CGPoint> points) {
-            if (points == null || points.Count == 0)
+        public static CGPoint GetXPoint(List<CGPoint> points, Func<CGPoint, CGPoint, bool> Compare){
+             if (points == null || points.Count == 0)
                 return null;
             CGPoint ret = points[0];
             for (int i=0; i< points.Count; i++) {
-                if (points[i].y < ret.y || points[i].y == ret.y && points[i].x < ret.x)
+                if (Compare(points[i], ret))
                     ret = points[i];
             }
             return ret;
         }
 
+        public static CGPoint LowestThenLeftmost(List<CGPoint> points) {
+            return GetXPoint(points, (p, r)=>{
+                return p.y < r.y || p.y == r.y && p.x < r.x;
+            });
+        }
+
+        public static CGPoint HighestThenRightmost(List<CGPoint> points) {
+            return GetXPoint(points, (p, r)=>{
+                return p.y > r.y || p.y == r.y && p.x > r.x;
+            });
+        }
+
         public static int ReversedY(int y) {
             return Global.GetScreenHeight() - y;
+        }
+
+        static bool LeftFarmostCompare(CGPoint from, CGPoint to, CGPoint a, CGPoint b) {
+            return Area2(from, to, a) > 0 && Area2(from, to, a) > Area2(from, to, b);
+        }
+        public static int LeftFarmostPointFromLine(CGPoint from, CGPoint to, List<CGPoint> points) {
+            return FarmostPointFromLine(from, to, points, LeftFarmostCompare);
+        }
+
+        static bool RightFarmostCompare(CGPoint from, CGPoint to, CGPoint a, CGPoint b){
+            return Area2(from, to, a) < 0 && Area2(from, to, a) < Area2(from, to, b);
+        }
+        public static int RightFarmostPointFromLine(CGPoint from, CGPoint to, List<CGPoint> points){
+            return FarmostPointFromLine(from, to, points, RightFarmostCompare);
+        }
+        static bool BothFarmostCompare(CGPoint from, CGPoint to, CGPoint a, CGPoint b){
+            return Math.Abs(Area2(from, to, a)) > Math.Abs(Area2(from, to, b));
+        }
+        public static int BothFarmostCompare(CGPoint from, CGPoint to, List<CGPoint> points){
+            return FarmostPointFromLine(from, to, points, BothFarmostCompare);
+        }
+        public static int FarmostPointFromLine(CGPoint from, CGPoint to, List<CGPoint> points, Func<CGPoint, CGPoint, CGPoint, CGPoint, bool> compare) {
+            if (points == null && points.Count == 0)
+                return -1;
+            int ret = -1;
+            int curr = 0;
+            for (int i = 0; i < points.Count; i++)
+                if (points[i] != from && points[i] != to && compare(from, to, points[i], points[curr])) {
+                    ret = i;
+                    curr = i;
+                }
+            return ret;
+        }
+
+        public static void Swap<T>(ref T a, ref T b){
+            T temp = a;
+            a = b;
+            b = temp;    
+        }
+        public static void Swap<T>(IList<T> list, int indexA, int indexB)
+        {
+            if(list != null && indexA < list.Count && indexB < list.Count) {
+                var temp = list[indexA];
+                list[indexA] = list[indexB];
+                list[indexB] = temp;
+            }
         }
     }
 }

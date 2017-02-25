@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,21 +33,37 @@ namespace ComputationalGeometry
             int pointsCount = 0;
             if(int.TryParse(ret, out pointsCount)) {
                 WinManager.Instance.CreateRandomPoints(pointsCount);
-                Draw.DrawPoints(Points);
+                Draw.DrawPoints(Points, true);
             }
         }
 
         private void toolStripButton2_Click(object sender, EventArgs e)
         {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.InitialDirectory = Application.StartupPath;
+            dialog.RestoreDirectory = true;
+            dialog.Filter = "text file|*.txt";
+            if (dialog.ShowDialog() == DialogResult.OK) {
+                using (StreamWriter sw = new StreamWriter(dialog.FileName)) {
 
+                    for (int i = 0; i < Points.Count; i++)
+                    {
+                        sw.WriteLine(string.Format("p,{0},{1},{2}", Points[i].id.ToString(), Points[i].x.ToString(), Points[i].y.ToString()));
+                    }
+                    sw.Flush();
+                    sw.Close();
+                }
+            }
         }
 
         private void toolStripComboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             chapter = SimpleChapterFactory.CreateChapter((ChapterType)toolStripComboBox1.SelectedIndex);
-            chapter.Init();
-            this.toolStripComboBox2.Items.AddRange(chapter.algorithmNames);
-            toolStripComboBox2.SelectedIndex = 0;
+            if(chapter != null) {
+                chapter.Init();
+                this.toolStripComboBox2.Items.AddRange(chapter.algorithmNames);
+                toolStripComboBox2.SelectedIndex = 2;
+            }
         }
 
         private void btnGo_Click(object sender, EventArgs e)
@@ -56,8 +73,36 @@ namespace ComputationalGeometry
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-            WinManager.Instance.CreatePoint(Ept.X, Ept.Y);
-            Draw.DrawPoint(Ept.X, Ept.Y);
+            var point = WinManager.Instance.CreatePoint(Ept.X, Ept.Y);
+            Draw.DrawPoint(point, true);
+        }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            Points.Clear();
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.InitialDirectory = Application.StartupPath;
+            dialog.RestoreDirectory = true;
+            dialog.Filter = "text file|*.txt";
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                using (StreamReader sr = new StreamReader(dialog.FileName))
+                {
+                    while (sr.Peek() >= 0)
+                    {
+                        string line = sr.ReadLine();
+                        string[] splits = line.Split(',');
+                        Points.Add(new CGPoint()
+                        {
+                            id = int.Parse(splits[1]),
+                            x = int.Parse(splits[2]),
+                            y = int.Parse(splits[3]),
+                        });
+                    }
+                    sr.Close();
+                }
+            }
+            Draw.DrawPoints(Points, true);
         }
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
@@ -83,9 +128,7 @@ namespace ComputationalGeometry
             Draw.Init(this);
             Global.Instance = this;
             this.IsMdiContainer = true;
-            List<int> test = new List<int>(new int[] { 0, 5, 4, 3, 2, 1 });
-            test.Sort(2, test.Count - 2, new IntCompare());
-            int a = 10;
+            this.toolStripComboBox1.SelectedIndex = 0;
         }
 
     }

@@ -35,8 +35,10 @@ namespace ComputationalGeometry
                 points.Add(CGUtils.CreateRandomCGPoint(PointsFillter));
         }
 
-        public void CreatePoint(int x, int y) {
-            points.Add(CGUtils.CreateCGPoint(x, y, PointsFillter));
+        public CGPoint CreatePoint(int x, int y) {
+            var ret = CGUtils.CreateCGPoint(x, y, PointsFillter);
+            points.Add(ret);
+            return ret;
         }
     }
 }
