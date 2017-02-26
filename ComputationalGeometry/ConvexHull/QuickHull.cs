@@ -32,32 +32,28 @@ namespace ComputationalGeometry
             QuickHull(rightPoints, 0, rightPoints.Count - 1);
         }
 
-        int QuickHull(List<CGPoint> points, int low, int high) {
+        void QuickHull(List<CGPoint> points, int low, int high) {
             if(high - low < 2) {
                 points[low].isExtreme = true;
                 points[high].isExtreme = true;
                 points[low].succ = points[high];
                 points[high].pred = points[low];
-                return -1;
+                //Console.WriteLine(string.Format("{0}.succ = {1}, {2}.pred = {3}", points[low].id, points[high].id,
+                //    points[low].id, points[high].id));
+                return;
             }
             var pivot = QuickHullPartition(points, low, high);
-            if (pivot == -1)
-                return high;
+            if (pivot == -1) {
+                points[low].isExtreme = true;
+                points[high].isExtreme = true;
+                points[low].succ = points[high];
+                points[high].pred = points[low];
+                return;
+            }
             points[pivot].isExtreme = true;
-            var pred = QuickHull(points, low, pivot);
-            var succ = QuickHull(points, pivot, high);
-            if(pred != -1) {
-                points[pivot].pred = points[pred];
-                points[pred].succ = points[pivot];
-                points[pred].isExtreme = true;
-            }
-            if (succ != -1)
-            {
-                points[pivot].succ = points[succ];
-                points[succ].pred = points[pivot];
-                points[succ].isExtreme = true;
-            }
-            return pivot;
+            QuickHull(points, low, pivot);
+            QuickHull(points, pivot, high);
+            return;
         }
 
         int QuickHullPartition(List<CGPoint> points, int low, int high){
