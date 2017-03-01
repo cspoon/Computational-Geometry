@@ -49,15 +49,38 @@ namespace ComputationalGeometry
                 + p.x * from.y - p.y * from.x;
         }
 
-        public static CGPoint GetXPoint(List<CGPoint> points, Func<CGPoint, CGPoint, bool> Compare){
-             if (points == null || points.Count == 0)
+        /// <summary>
+        /// [low, high)
+        /// </summary>
+        /// <param name="points"></param>
+        /// <param name="Compare"></param>
+        /// <param name="low"></param>
+        /// <param name="high"></param>
+        /// <returns></returns>
+        public static CGPoint GetXPoint(List<CGPoint> points, Func<CGPoint, CGPoint, bool> Compare, int low = 0, int high = -1)
+        {
+            if (points == null || points.Count == 0)
                 return null;
-            CGPoint ret = points[0];
-            for (int i=0; i< points.Count; i++) {
+            if (high == -1)
+                high = points.Count;
+            CGPoint ret = points[low];
+            for (int i=low; i< high; i++) {
                 if (Compare(points[i], ret))
                     ret = points[i];
             }
             return ret;
+        }
+
+        public static CGPoint LeftmostThenLowest(List<CGPoint> points, int low = 0, int high = -1) {
+            return GetXPoint(points, (p, r) => {
+                return p.x < r.x || p.x == r.x && p.y < r.y;
+            }, low, high);
+        }
+
+        public static CGPoint RightmostThenLowest(List<CGPoint> points, int low = 0, int high = -1){
+            return GetXPoint(points, (p, r) => {
+                return p.x > r.x || p.x == r.x && p.y < r.y;
+            }, low, high);
         }
 
         public static CGPoint LowestThenLeftmost(List<CGPoint> points) {

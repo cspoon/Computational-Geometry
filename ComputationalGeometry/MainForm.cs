@@ -62,13 +62,14 @@ namespace ComputationalGeometry
             if(chapter != null) {
                 chapter.Init();
                 this.toolStripComboBox2.Items.AddRange(chapter.algorithmNames);
-                toolStripComboBox2.SelectedIndex = 2;
+                toolStripComboBox2.SelectedIndex = 0;
             }
         }
 
         private void btnGo_Click(object sender, EventArgs e)
         {
-            chapter.Go(toolStripComboBox2.SelectedIndex);
+            if(chapter != null)
+                chapter.Go(toolStripComboBox2.SelectedIndex);
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)

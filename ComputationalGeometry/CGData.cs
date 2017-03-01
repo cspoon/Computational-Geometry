@@ -16,6 +16,12 @@ namespace ComputationalGeometry
             var o = obj as CGPoint;
             return o != null && x == o.x && y == o.y;
         }
+
+        public void Reset() {
+            pred = null;
+            succ = null;
+            isExtreme = false;
+        }
     }
 
     public class CGData

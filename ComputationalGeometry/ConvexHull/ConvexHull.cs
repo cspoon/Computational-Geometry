@@ -21,9 +21,5 @@ namespace ComputationalGeometry
                 points[i].isExtreme = false;
             }
         }
-
-        public void MergeHull() { 
-        
-        }
     }
 }
