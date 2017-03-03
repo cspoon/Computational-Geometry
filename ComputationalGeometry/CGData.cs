@@ -24,6 +24,12 @@ namespace ComputationalGeometry
         }
     }
 
+    public class CGEdge
+    {
+        public CGPoint from, to;
+        public bool isInternal;
+    }
+
     public class CGData
     {
         public List<CGPoint> points = new List<CGPoint>();
@@ -43,6 +49,8 @@ namespace ComputationalGeometry
 
         public CGPoint CreatePoint(int x, int y) {
             var ret = CGUtils.CreateCGPoint(x, y, PointsFillter);
+            if (ret == null)
+                return null;
             points.Add(ret);
             return ret;
         }

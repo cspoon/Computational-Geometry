@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -57,8 +58,7 @@ namespace ComputationalGeometry
         /// <param name="low"></param>
         /// <param name="high"></param>
         /// <returns></returns>
-        public static CGPoint GetXPoint(List<CGPoint> points, Func<CGPoint, CGPoint, bool> Compare, int low = 0, int high = -1)
-        {
+        public static CGPoint GetXPoint(List<CGPoint> points, Func<CGPoint, CGPoint, bool> Compare, int low = 0, int high = -1){
             if (points == null || points.Count == 0)
                 return null;
             if (high == -1)
@@ -143,6 +143,10 @@ namespace ComputationalGeometry
                 list[indexA] = list[indexB];
                 list[indexB] = temp;
             }
+        }
+
+        public static int SqrtLength(CGPoint a, Point b) {
+            return (int)(Math.Pow(a.x - b.X, 2) + Math.Pow(a.y - b.Y, 2));
         }
     }
 }

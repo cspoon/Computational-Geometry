@@ -10,13 +10,18 @@ namespace ComputationalGeometry
     {
         List<CGPoint> points = new List<CGPoint>();
 
-        public override void Init() {
+        public override void OnInit() {
             points.Clear();
             algorithmNames = new string[] {
             "Jarvis March", "Graham Scan", 
             "Quick Hull", "Merge Hull"};
         }
 
+        public override void OnClick(EventArgs e) {
+            var p = form.currPt;
+            var point = WinManager.Instance.CreatePoint(p.X, p.Y);
+            Draw.DrawPoint(point, true);
+        }
         public override void Reset() {
             points.Clear();
         }
@@ -52,6 +57,7 @@ namespace ComputationalGeometry
                 Draw.DrawLine(curr, curr.succ);
                 curr = curr.succ;
             } while (ltl != curr);
+            Draw.DrawImage();
         }
     }
 }

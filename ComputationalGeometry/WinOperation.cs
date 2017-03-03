@@ -16,7 +16,6 @@ namespace ComputationalGeometry
 
         public void Reset() {
             data.Clear();
-            
         }
 
         public void CreateRandomPoints(int count) {
