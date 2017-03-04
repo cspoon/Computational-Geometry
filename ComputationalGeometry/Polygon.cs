@@ -9,10 +9,10 @@ namespace ComputationalGeometry
     public class Polygon
     {
         public List<CGPoint> vertices;
-        public List<CGEdge> internalEdges;
+        public List<CGEdge> internalEdges = new List<CGEdge>();
     }
 
-    public class　MonoPolygon : Polygon
+    public class　YMonoPolygon : Polygon
     {
 
     }

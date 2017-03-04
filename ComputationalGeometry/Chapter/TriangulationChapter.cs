@@ -36,10 +36,21 @@ namespace ComputationalGeometry
 
         public override void OnMouseUp(MouseEventArgs e) {
             var newP = WinManager.Instance.CreatePoint(e.X, CGUtils.ReversedY(e.Y));
-            if (newP == null)
+            if (newP == null) {
+                var currP = form.currPt;
+                if (form.Points.Count > 1 && CGUtils.SqrtLength(form.Points[0], currP) < 500) {
+                    form.Points[0].pred = lastP;
+                    lastP.succ = form.Points[0];
+                    Draw.DrawLine(lastP, form.Points[0]);
+                    Draw.DrawImage();
+                    lastP = null;
+                }
                 return;
+            }
             Draw.DrawPoint(newP);
             Draw.DrawLine(lastP, newP);
+            lastP.succ = newP;
+            newP.pred = lastP;
             lastP = newP;
         }
 
@@ -76,19 +87,15 @@ namespace ComputationalGeometry
         public override void OnGo(int algorithmIndex){
             switch (algorithmIndex) {
                 case 0:
-                    pt = new MonoPolygonTriangulation();
+                    pt = new YMonoPolygonTriangulation();
                     break;
             }
+            pt.Init(form.Points);
             pt.Triangulation();
         }
 
         public override void DrawResult(){
-            //var ltl = CGUtils.LowestThenLeftmost(WinManager.Instance.data.points);
-            //var curr = ltl;
-            //do {
-            //    Draw.DrawLine(curr, curr.succ);
-            //    curr = curr.succ;
-            //} while (ltl != curr);
+            pt.DrawResult();
             Draw.DrawImage();
         }
     }

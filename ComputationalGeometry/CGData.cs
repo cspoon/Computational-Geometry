@@ -26,6 +26,7 @@ namespace ComputationalGeometry
 
     public class CGEdge
     {
+        public CGEdge(CGPoint from, CGPoint to, bool isInternal) { this.from = from; this.to = to; this.isInternal = isInternal; }
         public CGPoint from, to;
         public bool isInternal;
     }

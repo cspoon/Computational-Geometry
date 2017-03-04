@@ -148,5 +148,22 @@ namespace ComputationalGeometry
         public static int SqrtLength(CGPoint a, Point b) {
             return (int)(Math.Pow(a.x - b.X, 2) + Math.Pow(a.y - b.Y, 2));
         }
+
+        public static V[] ToArray<K, V>(this SortedDictionary<K,V> dic) {
+            V[] ret = new V[dic.Count];
+            int index = 0;
+            for (var e = dic.GetEnumerator(); e.MoveNext();)
+                ret[index++] = e.Current.Value;
+            return ret;
+        }
+        public static T PeekSecond<T>(this Stack<T> s){
+            if(s.Count > 1) {
+                var t = s.Pop();
+                var ret = s.Peek();
+                s.Push(t);
+                return ret;
+            }
+            return default(T);
+        }
     }
 }
