@@ -63,7 +63,7 @@ namespace ComputationalGeometry
             CGPoint from = points[low];
             low++;
             high--;
-            CGUtils.Swap(points, low, fp);
+            points.Swap(low, fp);
             CGPoint pivot = points[low];
             while(low < high) {
                 while (low < high && !CGUtils.ToLeft(from, pivot, points[high]))

@@ -95,8 +95,6 @@ namespace ComputationalGeometry
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e){
             e.Graphics.DrawImage(img, new Point(0, 0));
-            //Pen p = new Pen(Color.Black);
-            //e.Graphics.DrawLine(p, 0, 0, Ept.X, CGUtils.ReversedY(Ept.Y));
             if (chapter != null)
                 chapter.OnPaint(e);
         }
@@ -127,19 +125,20 @@ namespace ComputationalGeometry
             }
             Draw.DrawPoints(Points, true);
         }
-
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e){
             currPt.X = e.X;
             currPt.Y = CGUtils.ReversedY(e.Y);
-            //if (CursorD) {
-            //    this.Invalidate(new Rectangle(0, 0, 500, 500));
-            //}
             toolStripStatusLabel1.Text = "Spt:" + Spt.X.ToString() + "," + Spt.Y.ToString();
             toolStripStatusLabel2.Text = string.Format("CurrPoint: {0},{1}", currPt.X.ToString(), currPt.Y.ToString());
             if (chapter != null)
                 chapter.OnMouseMove(e);
         }
-
+        class IntCompare : IComparer<int>
+        {
+            public int Compare(int x, int y) {
+                return x - y;
+            }
+        }
         public MainForm() {
             InitializeComponent();
             img = new Bitmap(pictureBox1.Width, pictureBox1.Height);
@@ -148,6 +147,5 @@ namespace ComputationalGeometry
             this.IsMdiContainer = true;
             this.toolStripComboBox1.SelectedIndex = 1;
         }
-
     }
 }

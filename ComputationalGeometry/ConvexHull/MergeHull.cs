@@ -9,7 +9,7 @@ namespace ComputationalGeometry
     public partial class ConvexHull
     {
         public void MergeHull() {
-            points.Sort((a, b) => { return a.x - b.x; });
+            points.Sort((a, b) => { return (int)(a.x - b.x); });
             MergeHull(points, 0, points.Count);
         }
 

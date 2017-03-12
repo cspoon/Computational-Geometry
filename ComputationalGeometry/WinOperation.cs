@@ -22,7 +22,7 @@ namespace ComputationalGeometry
             data.CreateRandomPoints(count);
         }
 
-        public CGPoint CreatePoint(int x, int y) {
+        public CGPoint CreatePoint(float x, float y) {
             return data.CreatePoint(x, y);
         }
     }

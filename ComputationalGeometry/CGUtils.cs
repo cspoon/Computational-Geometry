@@ -13,7 +13,7 @@ namespace ComputationalGeometry
         static int pointIdGenerator;
         static Random r = new Random((int)DateTime.Now.Ticks);
 
-        public static CGPoint CreateCGPoint(int x, int y, Func<CGPoint, bool> haveSamePoint) {
+        public static CGPoint CreateCGPoint(float x, float y, Func<CGPoint, bool> haveSamePoint) {
             CGPoint p = new CGPoint() { x = x, y = y};
             if (!haveSamePoint(p)) {
                 p.id = pointIdGenerator++;
@@ -25,8 +25,8 @@ namespace ComputationalGeometry
         public static CGPoint CreateRandomCGPoint(Func<CGPoint, bool> haveSamePoint) {
             CGPoint p = new CGPoint();
             do{
-                p.x = r.Next(0, Global.GetScreenWidth());
-                p.y = r.Next(0, Global.GetScreenHeight());
+                p.x = (float)r.Next(0, Global.GetScreenWidth());
+                p.y = (float)r.Next(0, Global.GetScreenHeight());
             } while (haveSamePoint != null && haveSamePoint(p));
             p.id = pointIdGenerator++;
             return p;
@@ -44,7 +44,14 @@ namespace ComputationalGeometry
             return Area2(from, to, p) > 0;
         }
 
-        public static int Area2(CGPoint from, CGPoint to, CGPoint p) {
+        /// <summary>
+        /// signed 2 tri area
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <param name="p"></param>
+        /// <returns>negative if from to p 's order is ccw, positive if cw</returns>
+        public static float Area2(CGPoint from, CGPoint to, CGPoint p) {
             return from.x * to.y - from.y * to.x
                 + to.x * p.y - to.y * p.x
                 + p.x * from.y - p.y * from.x;
@@ -95,10 +102,12 @@ namespace ComputationalGeometry
             });
         }
 
+        public static float ReversedY(float y) {
+            return Global.GetScreenHeight() - y;
+        }
         public static int ReversedY(int y) {
             return Global.GetScreenHeight() - y;
         }
-
         static bool LeftFarmostCompare(CGPoint from, CGPoint to, CGPoint a, CGPoint b) {
             return Area2(from, to, a) > 0 && Area2(from, to, a) > Area2(from, to, b);
         }
@@ -136,7 +145,7 @@ namespace ComputationalGeometry
             a = b;
             b = temp;    
         }
-        public static void Swap<T>(IList<T> list, int indexA, int indexB)
+        public static void Swap<T>(this IList<T> list, int indexA, int indexB)
         {
             if(list != null && indexA < list.Count && indexB < list.Count) {
                 var temp = list[indexA];
@@ -164,6 +173,23 @@ namespace ComputationalGeometry
                 return ret;
             }
             return default(T);
+        }
+        public static CGPoint Get2DSegmentIntersection(CGEdge a, CGEdge b) {
+            return Get2DSegmentIntersection(a.from, a.to, b.from, b.to);
+        }
+        public static CGPoint Get2DSegmentIntersection(CGPoint a, CGPoint b, CGPoint c, CGPoint d) {
+            CGPoint inter = null;
+            float a1 = Area2(a, b, d);
+            float a2 = Area2(a, b, c);
+            if (a1 * a2 < 0.0f) {
+                float a3 = Area2(c, d, a);
+                float a4 = a3 + a2 - a1;
+                if (a3 * a4<0.0f) {
+                    float t = a3 / (a3 - a4);
+                    inter = a + t * (b - a);
+                }
+            }
+            return inter;
         }
     }
 }

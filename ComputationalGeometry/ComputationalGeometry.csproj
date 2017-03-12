@@ -47,9 +47,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AVL.cs" />
+    <Compile Include="BinTree.cs" />
+    <Compile Include="BST.cs" />
     <Compile Include="CGUtils.cs" />
     <Compile Include="Chapter\Chapter.cs" />
     <Compile Include="Chapter\ConvexHullChapter.cs" />
+    <Compile Include="Chapter\LineSegmentIntersectionChapter.cs" />
     <Compile Include="Chapter\TriangulationChapter.cs" />
     <Compile Include="ConvexHull\ConvexHull.cs" />
     <Compile Include="ConvexHull\GrahamScan.cs" />
@@ -57,6 +61,7 @@
     <Compile Include="ConvexHull\MergeHull.cs" />
     <Compile Include="ConvexHull\QuickHull.cs" />
     <Compile Include="Draw.cs" />
+    <Compile Include="LineSegmentIntersection\BentleyOttmann.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

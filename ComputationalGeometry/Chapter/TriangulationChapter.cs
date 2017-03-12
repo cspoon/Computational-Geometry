@@ -59,7 +59,7 @@ namespace ComputationalGeometry
                 var currP = form.currPt;
                 if(form.Points.Count>1 && CGUtils.SqrtLength(form.Points[0], currP) < 500) {
                     currP.Y = CGUtils.ReversedY(currP.Y);
-                    Point p = form.PictureBox1.PointToScreen(new Point(form.Points[0].x, CGUtils.ReversedY(form.Points[0].y)));
+                    Point p = form.PictureBox1.PointToScreen(new Point((int)form.Points[0].x, (int)CGUtils.ReversedY(form.Points[0].y)));
                     SetCursorPos(p.X, p.Y);
                 }
                 Draw.DrawImage();

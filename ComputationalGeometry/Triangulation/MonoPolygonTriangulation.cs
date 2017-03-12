@@ -55,11 +55,8 @@ namespace ComputationalGeometry
         }
 
         bool IsTopConvex(CGPoint curr, CGPoint top, CGPoint sec) {
-            //return !CGUtils.ToLeft(sec, curr, top);
-            if(top.pred == curr)
-                return CGUtils.ToLeft(sec, curr, top);
-            else
-                return !CGUtils.ToLeft(sec, curr, top);
+            bool left = CGUtils.ToLeft(sec, curr, top);
+            return top.pred == curr ? left : !left;
         }
 
         void ChopOffTriangle(CGPoint a, CGPoint b, CGPoint c) {

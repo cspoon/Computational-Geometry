@@ -14,6 +14,7 @@ namespace ComputationalGeometry
         static PictureBox px;
         static Bitmap i;
         static Pen pen = new Pen(Color.Black);
+        static Color pointColor = Color.Red;
 
         public static void Init(MainForm f){
             g = Graphics.FromImage(f.Img);
@@ -28,15 +29,17 @@ namespace ComputationalGeometry
             px.Refresh();
         }
 
-        public static void DrawPoint(int x, int y){
-            Rectangle rect = new Rectangle(x - 2, CGUtils.ReversedY(y) - 2, 4, 4);
+        public static void DrawPoint(int x, int y, int radius = 4) {
+            Rectangle rect = new Rectangle(x - radius/2, CGUtils.ReversedY(y) - radius/2, radius, radius);
             g.DrawEllipse(pen, rect);
-            Brush b = new SolidBrush(Color.Red);
+            Brush b = new SolidBrush(pointColor);
             g.FillEllipse(b, rect);
             DrawImage();
         }
-        public static void DrawPoint(CGPoint point, bool drawInfo = true){
-            DrawPoint(point.x, point.y);
+        public static void DrawPoint(CGPoint point, bool drawInfo = true, int radius = 4){
+            if (point == null)
+                return;
+            DrawPoint((int)point.x, (int)point.y, radius);
             if (drawInfo){
                 g.DrawString(point.id.ToString(), new Font("Arial", 10), new SolidBrush(Color.Black),
                (float)point.x-3, (float)CGUtils.ReversedY(point.y-3));
@@ -46,7 +49,7 @@ namespace ComputationalGeometry
         public static void DrawImage() {
             px.Invalidate();
         }
-        public static void DrawLine(int ax, int ay, int bx, int by, Graphics graphic = null) {
+        public static void DrawLine(float ax, float ay, float bx, float by, Graphics graphic = null) {
             graphic = graphic != null ? graphic : g;
             graphic.DrawLine(pen, ax, CGUtils.ReversedY(ay), bx, CGUtils.ReversedY(by));
         }
@@ -67,12 +70,9 @@ namespace ComputationalGeometry
                 DrawPoint(points[i], drawInfo);
         }
 
-        public static void ResetPen() {
-            pen = new Pen(Color.Black);
-        }
-
-        public static void SetPen(Pen p) {
-            pen = p;
-        }
+        public static void ResetPen() {pen = new Pen(Color.Black);}
+        public static void SetPen(Pen p) {pen = p;}
+        public static void SetPointColor(Color c) { pointColor = c; }
+        public static void ReSetPointColor() { pointColor = Color.Red; }
     }
 }

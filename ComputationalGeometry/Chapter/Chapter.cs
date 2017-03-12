@@ -10,6 +10,7 @@ namespace ComputationalGeometry
     public enum ChapterType
     {
         ConvexHull,
+        LineIntersection,
         Triangulation,
     }
 
@@ -45,6 +46,8 @@ namespace ComputationalGeometry
             switch (type){
                 case ChapterType.ConvexHull:
                     return new ConvexHullChapter();
+                case ChapterType.LineIntersection:
+                    return new LineSegmentIntersectionChapter();
                 case ChapterType.Triangulation:
                     return new TriangulationChapter();
             }
