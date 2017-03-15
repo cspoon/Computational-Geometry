@@ -191,5 +191,12 @@ namespace ComputationalGeometry
             }
             return inter;
         }
+
+        public static bool AddEx<T>(this SortedSet<T> set, T d) {
+            bool ret = set.Add(d);
+            if (!ret)
+                Console.WriteLine("can't add data to sortedset");
+            return ret;
+        }
     }
 }

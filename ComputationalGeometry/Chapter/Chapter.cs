@@ -40,7 +40,7 @@ namespace ComputationalGeometry
         public virtual void OnMouseMove(MouseEventArgs e){ }
     }
 
-    public static class SimpleChapterFactory
+    public static class ChapterSimpleFactory
     {
         public static Chapter CreateChapter(ChapterType type) {
             switch (type){

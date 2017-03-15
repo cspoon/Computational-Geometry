@@ -23,7 +23,8 @@ namespace ComputationalGeometry
         {
             points.Clear();
             algorithmNames = new string[] {
-            "Mono Polygon"};
+            "Mono Polygon",
+            "Simple Polygon",};
         }
 
         public override void OnMouseDown(MouseEventArgs e){
@@ -88,6 +89,9 @@ namespace ComputationalGeometry
             switch (algorithmIndex) {
                 case 0:
                     pt = new YMonoPolygonTriangulation();
+                    break;
+                case 1:
+                    pt = new SimplePolygonPartition();
                     break;
             }
             pt.Init(form.Points);

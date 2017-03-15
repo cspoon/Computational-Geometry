@@ -62,12 +62,12 @@ namespace ComputationalGeometry
         }
 
         private void toolStripComboBox1_SelectedIndexChanged(object sender, EventArgs e){
-            chapter = SimpleChapterFactory.CreateChapter((ChapterType)toolStripComboBox1.SelectedIndex);
+            chapter = ChapterSimpleFactory.CreateChapter((ChapterType)toolStripComboBox1.SelectedIndex);
             if(chapter != null) {
                 chapter.Init(this);
                 this.toolStripComboBox2.Items.Clear();
                 this.toolStripComboBox2.Items.AddRange(chapter.algorithmNames);
-                toolStripComboBox2.SelectedIndex = 0;
+                toolStripComboBox2.SelectedIndex = 1;
             }
         }
 
@@ -145,7 +145,7 @@ namespace ComputationalGeometry
             Draw.Init(this);
             Global.Instance = this;
             this.IsMdiContainer = true;
-            this.toolStripComboBox1.SelectedIndex = 1;
+            this.toolStripComboBox1.SelectedIndex = 2;
         }
     }
 }

@@ -15,7 +15,17 @@ namespace ComputationalGeometry
         }
         public virtual Polygon CreatePolygon() { return null; }
         public virtual void Triangulation() { }
-        public virtual void DrawResult() { }
+        public virtual void DrawResult() {
+            var dashLinePen = new Pen(Color.Gray);
+            dashLinePen.DashStyle = System.Drawing.Drawing2D.DashStyle.Custom;
+            dashLinePen.DashPattern = new float[] { 5, 5 };
+            Draw.SetPen(dashLinePen);
+            for (int i = 0; i < p.internalEdges.Count; i++) {
+                Draw.DrawLine(p.internalEdges[i].from, p.internalEdges[i].to);
+            }
+            Draw.DrawImage();
+            Draw.ResetPen();
+        }
     }
 
     public class YMonoPolygonTriangulation : PolygonTriangulation
@@ -60,25 +70,28 @@ namespace ComputationalGeometry
         }
 
         void ChopOffTriangle(CGPoint a, CGPoint b, CGPoint c) {
-            p.internalEdges.Add(new CGEdge(a, c, true));
-            p.internalEdges.Add(new CGEdge(b, c, true));
+            p.AddInternalEdge(a, c);
+            p.AddInternalEdge(b, c);
         }
 
-        public override void Triangulation() {
+        void InitLeftRightChain() {
             var htr = CGUtils.HighestThenRightmost(p.vertices);
             var ltl = CGUtils.LowestThenLeftmost(p.vertices);
             int index = 0;
             var leftCurr = htr;
-            while(leftCurr != ltl) {
+            while (leftCurr != ltl) {
                 leftChain.Add(index++, leftCurr);
                 leftCurr = leftCurr.succ;
             }
             leftChain.Add(index++, ltl);
             var rightCurr = htr.pred;
-            while(rightCurr != ltl) {
+            while (rightCurr != ltl) {
                 rightChain.Add(index++, rightCurr);
                 rightCurr = rightCurr.pred;
             }
+        }
+        public override void Triangulation() {
+            InitLeftRightChain();
             var eventQ = MergeEventQueue();
             Stack<CGPoint> s = new Stack<CGPoint>();
             while(eventQ.Count != 0) {
@@ -108,17 +121,6 @@ namespace ComputationalGeometry
                     } 
                 }
             }
-        }
-        public override void DrawResult() {
-            var dashLinePen = new Pen(Color.Gray);
-            dashLinePen.DashStyle = System.Drawing.Drawing2D.DashStyle.Custom;
-            dashLinePen.DashPattern = new float[] { 5, 5 };
-            Draw.SetPen(dashLinePen);
-            for (int i=0; i<p.internalEdges.Count; i++) {
-                Draw.DrawLine(p.internalEdges[i].from, p.internalEdges[i].to);
-            }
-            Draw.DrawImage();
-            Draw.ResetPen();
         }
     }
 }

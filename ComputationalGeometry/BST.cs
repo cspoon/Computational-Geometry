@@ -7,7 +7,7 @@ namespace ComputationalGeometry
 {
     public class BST<T> : BinTree<T>
     {
-        protected IComparer<T> comparer;
+        public IComparer<T> comparer;
         public BST(IComparer<T> comparer){ this.comparer = comparer; }
         public BinNode<T> Search(T e) {
             return SearchIn(e, Root);

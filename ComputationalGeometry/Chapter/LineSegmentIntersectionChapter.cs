@@ -40,7 +40,7 @@ namespace ComputationalGeometry
             }
             Draw.DrawPoint(newP);
             Draw.DrawLine(lastP, newP);
-            var edge = new CGEdge(lastP, newP);
+            var edge = CGEdge.CreateEdge(lastP, newP);
             edges.Add(edge);
             lastP.owner = edge;
             newP.owner = edge;

@@ -27,7 +27,7 @@ namespace ComputationalGeometry
             public LinePoint(CGPoint p) { this.point = p; }
 
             public int CompareTo(LinePoint other) {
-                return CGPoint.cgpointCompare.Compare(point, other.point);
+                return CGPoint.CGPointCompareByXThenY(point, other.point);
             }
         }
         public class LeftEndfPoint : LinePoint
@@ -57,27 +57,28 @@ namespace ComputationalGeometry
             this.points = points;
             this.edges = edges;
         }
+
         void InitPriorityQueue() {
             for (int i = 0; i < edges.Count; i++) {
                 if (edges[i].from < edges[i].to) {
-                    pq.Add(new LeftEndfPoint(edges[i].from));
-                    pq.Add(new RightEndfPoint(edges[i].to));
+                    pq.AddEx(new LeftEndfPoint(edges[i].from));
+                    pq.AddEx(new RightEndfPoint(edges[i].to));
                 } else {
-                    pq.Add(new LeftEndfPoint(edges[i].to));
-                    pq.Add(new RightEndfPoint(edges[i].from));
+                    pq.AddEx(new LeftEndfPoint(edges[i].to));
+                    pq.AddEx(new RightEndfPoint(edges[i].from));
                 }
             }
         }
-        void LeftEndPointExecute(LinePoint lp) {
-            CGEdge.edgeCompare.x = lp.point.x;
+        void HandleLeftEndPoint(LinePoint lp) {
+            CGEdge.edgeCompare.n = lp.point.x;
             var n= avl.Insert(lp.point.owner);
             if (n != null && n.Pred != n && n.Pred != null)
                 TestIntersection(n.data, n.Pred.data);
             if(n != null && n.Succ != n && n.Succ != null)
                 TestIntersection(n.data, n.Succ.data);
         }
-        void RightEndPointExecute(LinePoint lp) {
-            CGEdge.edgeCompare.x = lp.point.x;
+        void HandleRightEndPoint(LinePoint lp) {
+            CGEdge.edgeCompare.n = lp.point.x;
             var e = avl.Search(lp.point.owner);
             if(e != null && e.data == lp.point.owner) {
                 var pred = e.Pred;
@@ -87,15 +88,16 @@ namespace ComputationalGeometry
                 avl.Remove(e);
             }
         }
-        void IntersectionPointExecute(LinePoint lp) {
+        void HandelIntersectionPoint(LinePoint lp) {
             var inter = lp as Intersection;
-            CGEdge.edgeCompare.x = lp.point.x-0.1f;
+            CGEdge.edgeCompare.n = lp.point.x - 0.1f;
             var ea = avl.Search(inter.a);
             var eb = avl.Search(inter.b);
             if (ea.data != inter.a)
                 Console.WriteLine(string.Format("warning~! ea != inter.a where {0}", lp.point.ToString()));
             if(eb.data != inter.b)
                 Console.WriteLine(string.Format("warning~! eb != inter.b where {0}", lp.point.ToString()));
+            CGEdge.edgeCompare.n = lp.point.x + 0.1f;
             if (ea != null && eb != null) {
                 var predOfA = ea.Pred;
                 var succOfA = ea.Succ;
@@ -119,7 +121,7 @@ namespace ComputationalGeometry
                 var p = new Intersection(intersection, a, b);
                 if(!intersections.Contains(p)) {
                     intersections.Add(p);
-                    pq.Add(p);
+                    pq.AddEx(p);
                 }
             }
         }
@@ -128,11 +130,11 @@ namespace ComputationalGeometry
             while(pq.Count > 0) {
                 var first = pq.Min;
                 if (first.type == InecType.Left)
-                    LeftEndPointExecute(first);
+                    HandleLeftEndPoint(first);
                 else if (first.type == InecType.Right)
-                    RightEndPointExecute(first);
+                    HandleRightEndPoint(first);
                 else
-                    IntersectionPointExecute(first);
+                    HandelIntersectionPoint(first);
                 //avl.Print();
                 pq.Remove(first);
             }
