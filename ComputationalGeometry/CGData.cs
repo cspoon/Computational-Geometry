@@ -11,13 +11,20 @@ namespace ComputationalGeometry
         XThenY,
         YThenX
     }
-    public class CGPoint : IComparer<CGPoint>
+    public class CGPoint : IComparer<CGPoint>, ICloneable
     {
         public int id;
+        public int index;
         public float x, y;
         public CGPoint pred, succ;
         public bool isExtreme;
         public CGEdge owner;
+        bool isClone = false;
+        public float Length {
+            get {
+                return (float)Math.Sqrt(x * x + y * y);
+            }
+        }
         public void Reset() {
             pred = null;
             succ = null;
@@ -40,7 +47,8 @@ namespace ComputationalGeometry
             return IsConvex() ? isLeft : !isLeft;
         }
         public override string ToString() {
-            return string.Format("id = {0}, x = {1}, y = {2}", id.ToString(), x.ToString(), y.ToString());
+            return string.Format("{0}id = {1}, x = {2}, y = {3}", isClone ? "(Clone)" : "", 
+                id.ToString(), x.ToString(), y.ToString());
         }
         public static bool operator <(CGPoint a, CGPoint b) {
             return CGPointCompareByXThenY(a, b) < 0;
@@ -72,6 +80,17 @@ namespace ComputationalGeometry
             return ret > 0.0f ? 1 : ret < 0.0f ? -1 : 0;
         }
 
+        public static float Dot(CGPoint a, CGPoint b) {
+            return a.x * b.x + a.y * b.y;
+        }
+        public object Clone() {
+            return MemberwiseClone();
+        }
+        public CGPoint Copy() {
+            var ret = Clone() as CGPoint;
+            ret.isClone = true;
+            return ret;
+        }
     }
 
     public class CGEdge
@@ -105,6 +124,7 @@ namespace ComputationalGeometry
         public override string ToString() {
             return string.Format("form = {0}, to = {1}", from.id.ToString(), to.id.ToString());
         }
+        public CGPoint Other(CGPoint p) {return p == from ? to : p == to ? from : null;}
         public float GetY(float px) {
             if (from.x == to.x)
                 return Math.Min(to.y, from.y);
@@ -117,6 +137,7 @@ namespace ComputationalGeometry
             float t = (py - from.y) / (to.y - from.y);
             return from.x + t * (to.x - from.x);
         }
+        public bool Contains(int id) { return from.id == id || to.id == id; }
     }
 
     public class CGData
@@ -138,6 +159,7 @@ namespace ComputationalGeometry
             if (ret == null)
                 return null;
             points.Add(ret);
+            ret.index = points.Count - 1;
             return ret;
         }
     }

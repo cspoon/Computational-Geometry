@@ -41,23 +41,20 @@ namespace ComputationalGeometry
     {
         Queue<Vertex> queue = new Queue<Vertex>();
         AVL<CGEdge> avl = new AVL<CGEdge>(new CGEdge.CGEdgeCompare(CompareType.YThenX));
+        public Dictionary<int, List<CGEdge>> dicEdges = new Dictionary<int, List<CGEdge>>();
         public override Polygon CreatePolygon() {
             return new YMonoPolygon();
         }
         public override void Triangulation() {
-            Vertex last = null;
             List<Vertex> vs = new List<Vertex>();
-            for (int i = 0; i < p.vertices.Count; i++) {
-                var v = Vertex.CreateVertex(p.vertices[i]);
-                if (last != null)
-                    last.succ = v;
-                v.pred = last;
-                last = v;
-                vs.Add(v);
+            for(int i=0; i<p.vertices.Count; i++)
+                vs.Add(Vertex.CreateVertex(p.vertices[i]));
+            for(int i=0; i<vs.Count; i++) {
+                vs[i].pred = vs[p.vertices[i].pred.index];
+                vs[i].succ = vs[p.vertices[i].succ.index];
             }
-            last.succ = vs[0];
-            vs[0].pred = last;
-            vs.Sort((a, b) =>{
+            
+            vs.Sort((a, b) => {
                 return CGPoint.CGPointCompareByYThenX(a.point, b.point);
             });
             for (int i = 0; i < vs.Count; i++)
@@ -83,6 +80,11 @@ namespace ComputationalGeometry
                 }
             }
         }
+        void AddInternalEdge(CGPoint from, CGPoint to) {
+            var e = p.AddInternalEdge(from, to);
+            dicEdges.AddEx(from.id, e);
+            dicEdges.AddEx(to.id, e);
+        }
         void HandleStartVertex(Vertex v) {
             (avl.comparer as CGEdge.CGEdgeCompare).n = v.point.y;
             avl.Insert(v.e);
@@ -90,47 +92,50 @@ namespace ComputationalGeometry
         }
         void HandleSplitVertex(Vertex v) {
             var ej = SearchLeftNeighbourEdge(v);
-            p.AddInternalEdge(ej.helper.point, v.point);
+            AddInternalEdge(ej.helper.point, v.point);
             ej.helper = v;
             avl.Insert(v.e);
             v.e.helper = v;
         }
         void HandleEndVertex(Vertex v) {
             if (v.pred.e.helper.type == Vertex.Type.Merge)
-                p.AddInternalEdge(v.point, v.pred.e.helper.point);
+                AddInternalEdge(v.point, v.pred.e.helper.point);
             CGEdge.edgeCompare.n = v.point.x;
-            avl.Remove(v.e);
+            avl.Remove(v.pred.e);
         }
         void HandleMergeVertex(Vertex v) {
             if (v.pred.e.helper.type == Vertex.Type.Merge)
-                p.AddInternalEdge(v.point, v.pred.e.helper.point);
+                AddInternalEdge(v.point, v.pred.e.helper.point);
             avl.Remove(v.pred.e);
             var n = SearchLeftNeighbourEdge(v);
             if(n.helper.type == Vertex.Type.Merge)
-                p.AddInternalEdge(v.point, n.helper.point);
+                AddInternalEdge(v.point, n.helper.point);
             n.helper = v;
         }
         void HandleNormalVertex(Vertex v) {
             if(v.point.ContentIsOnTheRightSideOfPoint()) {
                 if (v.pred.e.helper.type == Vertex.Type.Merge)
-                    p.AddInternalEdge(v.point, v.pred.e.helper.point);
+                    AddInternalEdge(v.point, v.pred.e.helper.point);
                 avl.Remove(v.pred.e);
                 avl.Insert(v.e);
                 v.e.helper = v;
             } else {
                 var n = SearchLeftNeighbourEdge(v);
                 if(n.helper.type == Vertex.Type.Merge)
-                    p.AddInternalEdge(v.point, n.helper.point);
+                    AddInternalEdge(v.point, n.helper.point);
                 n.helper = v;
             }
         }
-
         CGEdge SearchLeftNeighbourEdge(Vertex v) {
             CGEdge e = CGEdge.CreateEdge(v.point, v.point);
             var ret = avl.Search(e);
             (avl.comparer as CGEdge.CGEdgeCompare).n = v.point.y - 0.1f;
             float x = ret.data.GetX(v.point.y);
             return v.point.x > x ? ret.data : ret.Pred.data;
+        }
+
+        public bool HasInternalEdge(int id) {
+            return dicEdges.ContainsKey(id);
         }
     }
 }

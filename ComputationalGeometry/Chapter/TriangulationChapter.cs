@@ -15,6 +15,7 @@ namespace ComputationalGeometry
         List<CGPoint> points = new List<CGPoint>();
         CGPoint lastP;
         PolygonTriangulation pt;
+        CGPoint linkPoint;
 
         [DllImport("User32")]
         public extern static void SetCursorPos(int x, int y);
@@ -24,6 +25,7 @@ namespace ComputationalGeometry
             points.Clear();
             algorithmNames = new string[] {
             "Mono Polygon",
+            "Simple Partition",
             "Simple Polygon",};
         }
 
@@ -39,10 +41,10 @@ namespace ComputationalGeometry
             var newP = WinManager.Instance.CreatePoint(e.X, CGUtils.ReversedY(e.Y));
             if (newP == null) {
                 var currP = form.currPt;
-                if (form.Points.Count > 1 && CGUtils.SqrtLength(form.Points[0], currP) < 500) {
-                    form.Points[0].pred = lastP;
-                    lastP.succ = form.Points[0];
-                    Draw.DrawLine(lastP, form.Points[0]);
+                if (CGUtils.SqrtLength(linkPoint, currP) < 500) {
+                    linkPoint.pred = lastP;
+                    lastP.succ = linkPoint;
+                    Draw.DrawLine(lastP, linkPoint);
                     Draw.DrawImage();
                     lastP = null;
                 }
@@ -58,10 +60,13 @@ namespace ComputationalGeometry
         public override void OnMouseMove(MouseEventArgs e) {
             if (form.IsMouseDown) {
                 var currP = form.currPt;
-                if(form.Points.Count>1 && CGUtils.SqrtLength(form.Points[0], currP) < 500) {
-                    currP.Y = CGUtils.ReversedY(currP.Y);
-                    Point p = form.PictureBox1.PointToScreen(new Point((int)form.Points[0].x, (int)CGUtils.ReversedY(form.Points[0].y)));
-                    SetCursorPos(p.X, p.Y);
+                for(int i=0; i<form.Points.Count; i++) {
+                    if (form.Points[i] != lastP && CGUtils.SqrtLength(form.Points[i], currP) < 500) {
+                        currP.Y = CGUtils.ReversedY(currP.Y);
+                        Point p = form.PictureBox1.PointToScreen(new Point((int)form.Points[i].x, (int)CGUtils.ReversedY(form.Points[i].y)));
+                        SetCursorPos(p.X, p.Y);
+                        linkPoint = form.Points[i];
+                    }
                 }
                 Draw.DrawImage();
             }
@@ -92,6 +97,9 @@ namespace ComputationalGeometry
                     break;
                 case 1:
                     pt = new SimplePolygonPartition();
+                    break;
+                case 2:
+                    pt = new SimplePolygonTriangulation();
                     break;
             }
             pt.Init(form.Points);

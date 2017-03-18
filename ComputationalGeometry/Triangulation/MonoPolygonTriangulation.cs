@@ -56,9 +56,9 @@ namespace ComputationalGeometry
             int lIndex = 0;
             int rIndex = 0;
             while(lIndex < leftArr.Length || rIndex < rightArr.Length) {
-                if (lIndex < leftArr.Length && (rIndex >= rightArr.Length) || leftArr[lIndex].y >= rightArr[rIndex].y)
+                if (lIndex < leftArr.Length && ((rIndex >= rightArr.Length) || leftArr[lIndex].y >= rightArr[rIndex].y))
                     ret.Enqueue(leftArr[lIndex++]);
-                else if (rIndex < rightArr.Length && (lIndex >= leftArr.Length) || rightArr[rIndex].y > leftArr[lIndex].y)
+                else if (rIndex < rightArr.Length && ((lIndex >= leftArr.Length) || rightArr[rIndex].y > leftArr[lIndex].y))
                     ret.Enqueue(rightArr[rIndex++]);
             }
             return ret;

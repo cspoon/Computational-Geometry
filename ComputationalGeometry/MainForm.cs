@@ -67,7 +67,7 @@ namespace ComputationalGeometry
                 chapter.Init(this);
                 this.toolStripComboBox2.Items.Clear();
                 this.toolStripComboBox2.Items.AddRange(chapter.algorithmNames);
-                toolStripComboBox2.SelectedIndex = 1;
+                toolStripComboBox2.SelectedIndex = 0;
             }
         }
 

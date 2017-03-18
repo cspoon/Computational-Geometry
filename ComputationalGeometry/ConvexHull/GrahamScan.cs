@@ -8,15 +8,6 @@ namespace ComputationalGeometry
 {
     public partial class ConvexHull
     {
-        class PolarAngleCompare : IComparer<CGPoint>
-        {
-            public CGPoint ltl;
-            public int Compare(CGPoint x, CGPoint y)
-            {
-                return CGUtils.ToLeft(ltl, x, y) ? -1 : 1;
-            }
-        }
-
         public void GrahamScan()
         {
             Reset();
@@ -30,7 +21,7 @@ namespace ComputationalGeometry
                 points[ltlIndex] = points[0];
                 points[0] = temp;
             }
-            PolarAngleCompare compare = new PolarAngleCompare() { ltl = ltl };
+            PolarAnglePointCompare compare = new PolarAnglePointCompare() { piovt = ltl };
             points.Sort(1, points.Count - 1, compare);
             Stack<CGPoint> t = new Stack<CGPoint>();
             Stack<CGPoint> s = new Stack<CGPoint>();

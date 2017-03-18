@@ -11,8 +11,10 @@ namespace ComputationalGeometry
         public List<CGPoint> vertices;
         public List<CGEdge> internalEdges = new List<CGEdge>();
 
-        public void AddInternalEdge(CGPoint from, CGPoint to) {
-            internalEdges.Add(CGEdge.CreateEdge(from, to, true));
+        public CGEdge AddInternalEdge(CGPoint from, CGPoint to) {
+            var ret = CGEdge.CreateEdge(from, to, true);
+            internalEdges.Add(ret);
+            return ret;
         }
     }
 

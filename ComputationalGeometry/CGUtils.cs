@@ -8,10 +8,29 @@ using System.Windows.Forms;
 
 namespace ComputationalGeometry
 {
+
+    public class RotateAngleCompare : IComparer<CGPoint>
+    {
+        public CGPoint piovt, from;
+        public int Compare(CGPoint x, CGPoint y) {
+            float rX = CGUtils.GetRotateAngleInRadians(from, piovt, x);
+            float rY = CGUtils.GetRotateAngleInRadians(from, piovt, y);
+            float ret = rX - rY;
+            return ret < 0f ? -1 : ret > 0f ? 1 : 0;
+        }
+    }
+    public class PolarAnglePointCompare : IComparer<CGPoint>
+    {
+        public CGPoint piovt;
+        public int Compare(CGPoint x, CGPoint y) {
+            return CGUtils.ToLeft(piovt, x, y) ? -1 : 1;
+        }
+    }
     public static class CGUtils
     {
         static int pointIdGenerator;
         static Random r = new Random((int)DateTime.Now.Ticks);
+        const float epsilon = 0.00001f;
 
         public static CGPoint CreateCGPoint(float x, float y, Func<CGPoint, bool> haveSamePoint) {
             CGPoint p = new CGPoint() { x = x, y = y};
@@ -155,6 +174,8 @@ namespace ComputationalGeometry
         }
 
         public static int SqrtLength(CGPoint a, Point b) {
+            if (a == null || b == null)
+                return 0;
             return (int)(Math.Pow(a.x - b.X, 2) + Math.Pow(a.y - b.Y, 2));
         }
 
@@ -197,6 +218,28 @@ namespace ComputationalGeometry
             if (!ret)
                 Console.WriteLine("can't add data to sortedset");
             return ret;
+        }
+
+        public static void AddEx<K, V>(this Dictionary<K, List<V>> dic, K key, V value) {
+            if (!dic.ContainsKey(key))
+                dic.Add(key, new List<V>());
+            dic[key].Add(value);
+        }
+
+        public static float GetRotateAngleInRadians(CGPoint from, CGPoint common, CGPoint to) {
+            CGPoint fromVector = from - common;
+            CGPoint toVector = to - common;
+            float cos = CGPoint.Dot(fromVector, toVector) / (fromVector.Length * toVector.Length);
+            if (Math.Abs(cos - 1.0 )<= epsilon)
+                return 0f;
+            else if (Math.Abs(cos + 1.0) <= epsilon)
+                return (float)(Math.Acos(-1) * (180 / Math.PI));
+            else {
+                //float rad = (float)Math.Acos(cos);
+                //return CGUtils.ToLeft(from, to, common) ? rad : (float)(2 * Math.PI - rad);
+                float rad = (float)Math.Acos(cos) * (float)(180 / Math.PI);
+                return CGUtils.ToLeft(from, to, common) ? rad : 360f - rad;
+            }
         }
     }
 }
